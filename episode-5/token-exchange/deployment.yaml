@@ -1,0 +1,126 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: entrashow
+    app.kubernetes.io/instance: entrashow
+    app.kubernetes.io/name: httpshow
+    app.kubernetes.io/version: 0.4.2
+  name: entrashow
+  namespace: entra
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: entrashow
+      app.kubernetes.io/name: httpshow
+      app.kubernetes.io/version: 0.4.2
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: entrashow
+        app.kubernetes.io/instance: entrashow
+        app.kubernetes.io/name: httpshow
+        app.kubernetes.io/version: 0.4.2
+    spec:
+      automountServiceAccountToken: true
+      containers:
+      - env:
+        - name: HTTPSHOW_LOG_LEVEL
+          value: "debug"
+        - name: HTTPSHOW_BASE_URL
+          value: https://entrashow-127-0-0-1.nip.io
+        - name: HTTPSHOW_SERVER_PORT
+          value: "8000"
+        - name: HTTPSHOW_CLIENT_TIMEOUT
+          value: "30"
+        - name: HTTPSHOW_VERIFY_BACKEND_CERTIFICATE
+          value: "False"
+        - name: HTTPSHOW_OIDC_SCOPES
+          value: openid email profile
+        - name: HTTPSHOW_OIDC_PKCE
+          value: "True"
+        - name: HTTPSHOW_OIDC_PAR
+          value: "False"
+        - name: HTTPSHOW_OIDC_USERINFO
+          value: "False"
+        - name: HTTPSHOW_SESSION_COOKIE_NAME
+          value: entrashow
+        - name: HTTPSHOW_SESSION_LIFETIME
+          value: "60"
+        - name: HTTPSHOW_API_URL
+          value: https://airlock-gateway.airlock-gateway:8081
+        - name: HTTPSHOW_API_HOST
+          value: apishow-127-0-0-1.nip.io
+        - name: HTTPSHOW_TRUST_PROXY_HEADERS
+          value: "False"
+        - name: HTTPSHOW_TRUSTED_PROXIES
+          value: "10.42.0.0/16"
+        - name: HTTPSHOW_CSS_FILE
+          value: null
+        - name: HTTPSHOW_CONFIG_FILE
+          value: ""
+        - name: HTTPSHOW_APP_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              key: HTTPSHOW_APP_SECRET_KEY
+              name: entrashow
+        - name: HTTPSHOW_OIDC_ISSUER
+          valueFrom:
+            secretKeyRef:
+              key: HTTPSHOW_OIDC_ISSUER
+              name: entrashow
+        - name: HTTPSHOW_OIDC_LOGOUT_URL
+          valueFrom:
+            secretKeyRef:
+              key: HTTPSHOW_OIDC_LOGOUT_URL
+              name: entrashow
+        - name: HTTPSHOW_OIDC_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: HTTPSHOW_OIDC_CLIENT_ID
+              name: entrashow
+        - name: HTTPSHOW_OIDC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: HTTPSHOW_OIDC_CLIENT_SECRET
+              name: entrashow
+        - name: TZ
+          value: Europe/Zurich
+        image: quay.io/miniboat/httpshow:0.4.2
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 1
+          periodSeconds: 61
+          timeoutSeconds: 3
+        name: entrashow
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 1
+          periodSeconds: 63
+          timeoutSeconds: 3
+        resources: null
+        startupProbe:
+          failureThreshold: 20
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 1
+          periodSeconds: 1
+          timeoutSeconds: 3
+      restartPolicy: Always
+      serviceAccountName: entrashow

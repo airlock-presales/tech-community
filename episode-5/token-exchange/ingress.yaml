@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app: entrashow
+    app.kubernetes.io/instance: entrashow
+    app.kubernetes.io/name: httpshow
+    app.kubernetes.io/version: 0.4.2
+  name: entrashow
+  namespace: entra
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: entrashow-127-0-0-1.nip.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: entrashow
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
