@@ -48,3 +48,4 @@ Installation
    ```
    kubectl apply -k .
    ```
+1. For the relevant IAM snippets, check [here](https://github.com/airlock-presales/iam-snippets).
