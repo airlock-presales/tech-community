@@ -1,0 +1,128 @@
+schemaVersion: iam.airlock.com/v1
+type: IamSnippet
+metadata:
+  iamVersion: '8.5'
+  history:
+  - datetime: 2025-10-27T12:15:20.370Z
+    author: UpdateTool
+    comment: Automatic update to version 8.5
+  - datetime: 2025-09-17T12:59:42.438Z
+    author: admin
+    comment: snippet base
+spec:
+- type: CookieTicketAdder
+  id: cc2ce136-2c1f-445b-aa19-6a49131e1860
+  displayName: Assertion in cookie AL_ALEC_AUTH_TICKET
+  properties:
+    cookieDomain: example.com
+    cookieName: AL_ALEC_AUTH_TICKET
+    cookiePath: /airlock/alec_security_check
+- type: TargetApplication
+  id: 3dfcd2ca-4b85-4011-b7a9-b76a2fad5617
+  displayName: TA for Airlock Gateway Config Center
+  properties:
+    applicationId:
+      type: ApplicationId
+      id: 9fa816ce-6c65-49bb-84b1-1350163c61d7
+      displayName: AID for Airlock Gateway Config Center
+      properties:
+        applicationId: airlock-gateway-config-center
+    applicationSelector:
+      type: RegexApplicationSelector
+      id: 34ec5237-fa3c-4dc3-8b19-288630fa3191
+      displayName: Regex for Airlock Gateway config center
+      properties:
+        uriPattern: https://gw.example.com/airlock/alec_security_check
+    identityPropagation:
+    - pluginList:
+      - type: GenericIdentityPropagation
+        id: 1c8129ec-4b38-46a5-a1b3-7e795f60edf5
+        displayName: IDProp for Config Center
+        properties:
+          ticketAdder:
+            type: ForwardLocationParameterAdder
+            id: df6debc0-c023-4379-bd76-21567d9f3c17
+            displayName: Assertion in URL
+            properties:
+              ticketParameterName: alecAssertion
+          ticketStringProvider:
+            type: TicketStringProvider
+            id: 526d01c3-9361-4d7c-9ab0-f218559c7ccd
+            properties:
+              keyValues:
+              - pluginList:
+                - type: TicketKeyValue
+                  id: 7d0e6ea5-3662-4461-9736-18849261b9c6
+                  displayName: KV roles
+                  properties:
+                    ticketKey: roles
+                    valueSelector: roles
+                - type: TicketKeyValue
+                  id: 13f6bece-b3cf-4e6b-9d9f-75d271d810b5
+                  displayName: KV username
+                  properties:
+                    ticketKey: username
+                    valueSelector: user-id
+              ticketEncoder:
+                type: JwtTicketEncoderSettings
+                id: 1eea36b5-fc8e-4c91-8005-6f15bb0d6ddf
+                displayName: JWT für Airlock Config Center
+                properties:
+                  claimsStoredAsArray:
+                  - valueList:
+                    - roles
+                  encrypter:
+                    type: JwtTicketDirectAesEncryptionSettings
+                    id: e41a62e1-016d-41d7-a424-42ee0fe1b05d
+                    displayName: Encrypter for Airlock Gateway Config Center
+                    properties:
+                      directEncryptionMethod: A256CBC_HS512
+                      encryptionKey:
+                      - value:
+                          storageId: gatewaycc
+                  issuer: Airlock IAM
+                  signer:
+                    type: JwtTicketHmacSettings
+                    id: 0ae12fbb-0412-42d3-9e32-32c743c52f73
+                    displayName: Signer for Airlock Gateway Config Center
+                    properties:
+                      hmacKey:
+                      - value:
+                          storageId: gatewaycc
+                  usernameTicketKey: username
+              valueProviders:
+              - pluginList:
+                - type: UserIdentityValueMapProvider
+                  id: 58ba8368-1b0d-40a6-b4ea-f308ecd4c194
+                - type: RolesProvider
+                  id: 9d7b5bbe-4d1d-4efa-a545-ae096c982f96
+                  properties:
+                    roleProviders:
+                    - pluginList:
+                      - type: StaticRolesProvider
+                        id: bcf8a815-84b4-4fdc-a706-a9bb337c5aa4
+                        displayName: Static Role airlock administrator
+                        properties:
+                          roles:
+                          - valueList:
+                            - airlock-administrator
+- type: AuthenticationUi
+  id: a76a231e-bdbc-472d-94d1-86739e7af115
+  displayName: AAUI for Airlock Gateway Config Center
+  properties:
+    targetApplicationId:
+      ref: 9fa816ce-6c65-49bb-84b1-1350163c61d7
+    targetURIResolver:
+      type: TargetURIResolver
+      id: 443c009c-a8df-4e0c-97ed-9dfd48b9aa87
+      displayName: URL for Airlock Gateway Config Center
+      properties:
+        defaultValue: https://gw.example.com/airlock/alec_security_check
+- type: QueryParameterURIValueExtractor
+  id: 46168aa2-3192-4b53-8aa0-b71b92d274c2
+  displayName: Location parameter for Airlock Gateway Config Center
+  properties:
+    allowedUriPatterns:
+    - valueList:
+      - https://iam.example.com/auth-login/check-login\?Location=https%3A%2F%2Fgw.example.com%2Fairlock%2Falec_security_check
+    parameterName: Location
