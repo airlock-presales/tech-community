@@ -2,7 +2,7 @@
 
 In the 5th episode of the Airlock Tech Community Trainings, we explained and demonstrated how to use Airlock IAM to authenticate admins to login to the Airlock Gateway Config Center.
 
-This snippet and the full blown configuration implementing a OIDC RP using an OIDC OP for e.g. SSO, both for Airlock IAM 8.4, implement the example configuration documented in https://docs.airlock.com/gateway/8.4/index/1635400835116.html.
+This snippet and the full blown configuration implementing a OIDC RP using an OIDC OP for e.g. SSO, both for Airlock IAM 8.4, implement the example configuration documented in https://docs.airlock.com/gateway/latest/index/1635400835116.html.
 
 ## Setup your environment - Gateway
 
