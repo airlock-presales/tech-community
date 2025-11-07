@@ -1,6 +1,6 @@
 # Airlock Tech Community - Token Exchange
 
-In the 5th episode of the Airlock Tech Community Trainings, we explained and demonstrated how Token Exchange works. The Airlock Microgateway transparently exchanged OAuth2 or OIDC access or ID tokens for an application to:
+The 5th episode of the Airlock Tech Community Trainings explained and demonstrated how Token Exchange works. The Airlock Microgateway transparently exchanged OAuth2 or OIDC access or ID tokens for an application to:
 
 - Harmonise different tokens from multiple issuers on a single internal standard.
 - Eliminate the *almighty* single token accepted by all services and replace it with service-individual tokens.
@@ -48,4 +48,5 @@ Installation
    ```
    kubectl apply -k .
    ```
-1. For the relevant IAM snippets, check [here](https://github.com/airlock-presales/iam-snippets).
+1. For the relevant IAM snippets, go to [here](https://github.com/airlock-presales/iam-snippets) and check:
+   - OIDC OP - it includes the Token Exchange Service
