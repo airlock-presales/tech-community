@@ -5,7 +5,7 @@ metadata:
     app: entrashow
     app.kubernetes.io/instance: entrashow
     app.kubernetes.io/name: httpshow
-    app.kubernetes.io/version: 0.4.2
+    app.kubernetes.io/version: 0.4.3
   name: entrashow
   namespace: entra
 spec:

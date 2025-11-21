@@ -14,39 +14,53 @@ Prerequisite:
 
 Installation
 
-1. Create namespace for demo
-   ```
-   kubectl create ns entra
-   ```
-1. Substitute the POD IP network mask in <code>deployment.yaml</code>
+1. Substitute the POD IP network mask in <code>entra/deployment.yaml</code> and <code>api/deployment.yaml</code>
    ```
    - name: HTTPSHOW_TRUSTED_PROXIES
      value: "10.42.0.0/16"
    ```
 
    If you don't know it, use one of the following methods:
-   1. Deduct from pod IP addresses
+   - Deduct from pod IP addresses
       ```
       kubectl -n airlock-gateway get pod -o wide | awk '/airlock/{print $6}'
       ```
-   2. Extract from cluster info
+   - Extract from cluster info
       ```
       kubectl cluster-info dump | jq -r '.items[]|.spec.podCIDR'
       ```
 
-1. Update the Microsoft Entra ID tenant id in <code>secret.yaml</code>
+1. Update the Microsoft Entra ID tenant id and client id and secret in <code>entra/secret.yaml</code>
    ```
    HTTPSHOW_OIDC_ISSUER: https://login.microsoftonline.com/<tenant-uuid>/v2.0
    HTTPSHOW_OIDC_LOGOUT_URL: https://login.microsoftonline.com/<tenant-uuid>/oauth2/v2.0/logout
-   ```
-1. Set client id and secret to connect to Microsoft Entra ID in <code>secret.yaml</code>
-   ```
    HTTPSHOW_OIDC_CLIENT_ID: <client-uuid>
    HTTPSHOW_OIDC_CLIENT_SECRET: <client-secret>
    ```
+1. Update the Microsoft Entra ID tenant id in <code>api/jwks-entra.yaml</code>
+   ```
+   uri: https://login.microsoftonline.com/<tenant-uuid>/discovery/v2.0/keys
+   ```
+1. Update the Microsoft Entra ID tenant id in <code>api/jwt.yaml</code>
+   ```
+   issuer: https://login.microsoftonline.com/<tenant-uuid>/v2.0
+   ```
+1. Update the client secret to match the static client configured in your Airlock IAM instance in <code>api/secret.yaml</code>
+   ```
+   client.secret: password
+   ```
+1. Update the URL to point to your Airlock IAM instance token exchange endpoint in <code>api/tokenexchange.yaml</code>
+   ```
+   uri: https://<host>/<instance>-login/rest/oauth2/authorization-servers/<as-id>/token
+   ```
 1. Apply manifests
    ```
-   kubectl apply -k .
+   kubectl apply -k api
+   kubectl apply -k entra
    ```
 1. For the relevant IAM snippets, go to [here](https://github.com/airlock-presales/iam-snippets) and check:
    - OIDC OP - it includes the Token Exchange Service
+
+## Show the demo
+
+Entrypoint for the demo is: https://entrashow-127-0-0-1.nip.io/

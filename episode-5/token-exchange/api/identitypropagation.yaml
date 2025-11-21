@@ -1,0 +1,9 @@
+apiVersion: microgateway.airlock.com/v1alpha1
+kind: IdentityPropagation
+metadata:
+  name: api
+  namespace: api
+spec:
+  bearerToken:
+    source:
+      tokenExchange: {}

@@ -1,0 +1,11 @@
+apiVersion: microgateway.airlock.com/v1alpha1
+kind: JWKS
+metadata:
+  name: entra
+  namespace: api
+spec:
+  provider:
+    remote:
+      uri: https://login.microsoftonline.com/<tenant-uuid>/discovery/v2.0/keys
+      timeouts:
+        connect: 5s

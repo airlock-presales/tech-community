@@ -1,0 +1,28 @@
+apiVersion: microgateway.airlock.com/v1alpha1
+kind: TokenExchange
+metadata:
+  name: hearst
+spec:
+  tokenEndpoint:
+    endpoint:
+      uri: https://<host>/<instance>-login/rest/oauth2/authorization-servers/<as-id>/token
+      tls:
+        protocol:
+          minimum: TLSv1_3
+      timeouts:
+        connect: 2s
+    credentials:
+      clientPassword:
+        method: BasicAuth
+        clientID: apishow
+        clientSecret:
+          secretRef:
+            name: api
+
+  requestedTokenType: urn:ietf:params:oauth:token-type:jwt
+  audiences:
+    - 'https://api-127-0-0-1.nip.io'
+    - api
+  scopes:
+    - email
+    - profile

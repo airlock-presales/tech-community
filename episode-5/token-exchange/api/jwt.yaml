@@ -1,0 +1,15 @@
+apiVersion: microgateway.airlock.com/v1alpha1
+kind: JWT
+metadata:
+  name: api
+spec:
+  extractionSources:
+    - bearerToken: {}
+  requireAny:
+    - jwksRef:
+        name: entra
+      issuer: https://login.microsoftonline.com/<tenant-uuid>/v2.0
+
+  expirationRequired: true
+  maxLifetime: 24h
+  clockSkewTolerance: 10s
